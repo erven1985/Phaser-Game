@@ -1,0 +1,4 @@
+class CurrentUserGamesController < ApplicationController
+
+
+end

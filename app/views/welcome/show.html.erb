@@ -1,0 +1,20 @@
+<div id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="card">
+    <div class="card-header" role="tab" id="headingTwo">
+      <h5 class="mb-0">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          <% @users.each do |user| %>
+          <li id='list-test' class='text-center'><%= user.name %></li>
+          <% end %>
+        </a>
+      </h5>
+    </div>
+    <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+      <div class="card-block">
+        <% @CurrentUserGame.each do |game| %>
+        <li id='list-test' class='text-center'><%= game.current_score %></li>
+        <% end %>
+			</div>
+    </div>
+  </div>
+</div> 	

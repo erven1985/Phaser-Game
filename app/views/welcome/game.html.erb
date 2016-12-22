@@ -1,0 +1,1360 @@
+
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<div id="game">
+<script>
+   
+var count = 0;
+var countz = 0
+var cursors;
+var blocks;
+// var health = 5;
+var beambeam = 0
+var dcount = 1;
+var thebeam;
+var machinegun;
+var mcount;
+var pronecount = 0;
+var duck = "false";
+var roll;
+var countsi = 0;
+var m;
+var g;
+var z;
+var turn;
+var jump;
+var pickup;
+var lands;
+var cursors;
+var theme;
+var diamonds;
+var score = 0;
+var scoreText;
+var fire2count = 0;
+var fire2lap = 0;
+var fire1lap = 0
+var health = 10
+var bcount = 0;
+var arr = [];
+var b2count = 0;
+var a;  
+var last;
+var dead_count = 0;
+var eturn = "left";
+var prone;
+var beamcount = 0; 
+var b7count = 0;
+var yes;
+var bulletshot;
+var b3count = 0;
+var b4count = 0;
+var b5count = 0;
+var b6count = 0; 
+var enemy2;
+var enemy3;
+var enemy4;
+var enemy5;
+var enemy6;
+var ebullet;
+var direction = "left"
+var playerKilled = 0;
+var gameOver;
+var machineKilled = 0;
+var missionDone;
+
+ Player = function(bullets,score,game){
+    
+    this.game = game;
+    this.bullets = bullets;
+    this.score = score;
+    this.bullets = bullets;
+    this.fireRate = 1000;
+    this.nextFire = 0;
+    this.alive = true;
+    this.player = game.add.sprite(600, 750, 'pro')
+    this.player.health = 10;
+    game.physics.arcade.enable(this.player);
+    this.player.scale.setTo(2,2)
+    this.player.body.bounce.y = 0;
+    this.player.body.gravity.y = 1000;
+    this.player.animations.add('left', [32,34,36,38], 10, true);
+    this.player.animations.add('right', [40,42,44],10, true);
+    game.camera.follow(this.player);
+    this.player.animations.add('shoot', [48],10,true)
+    this.player.animations.add('shoot_left',[30],10,true)
+    this.player.animations.add('roll', [4,5,6,7],10,true)
+    this.player.animations.add('roll_left',[3,2,1,0],10,true)
+    this.player.animations.add('duck', [22],10,true)
+    this.player.animations.add('duck_left', [16],10,true)
+    this.player.animations.add('hit', [33,35],10,true)
+
+   }
+
+
+ Player.prototype.destroy = function() {
+  // this.player = game.add.sprite(600,750, 'thebad')
+  // game.physics.arcade.enable(this.player);
+  //     this.player.scale.setTo(2,2)
+  //     this.player.body.bounce.y = 0;
+  //     this.player.body.gravity.y = 1000;
+  //     this.player.animations.add('left', [1,2,3,4], 10, true);
+  //     this.player.animations.add('right', [6,7,8,9],10, true);
+  //   game.camera.follow(this.player);
+  //     this.player.animations.add('shoot', [10],10,true)
+  //     this.player.animations.add('shoot_left',[0],10,true)
+  this.player.kill();
+   
+  }
+
+
+  Enemy = function(game){
+  
+      this.game = game;
+      this.enemy = game.add.sprite(1100, 750, 'dude')
+      this.enemy.health = 10;
+      game.physics.arcade.enable(this.enemy);
+      this.enemy.scale.setTo(2,2)
+      this.enemy.body.bounce.y = 0;
+      this.enemy.body.gravity.y = 1000;
+      this.enemy.animations.add('left', [0,1,2])
+      this.enemy.animations.add('right',[4,5,6])
+      this.enemy.animations.add('fire', [20],10,true)
+      this.enemy.animations.add('fire_right', [34],10,true)
+      this.enemy.animations.add('hit',[35],10,true)
+      this.enemy.animations.add('prone-left',[10],10,true)
+      this.enemy.animations.add('prone-right',[12],10,true)
+      this.enemy.animations.add('roll',[4,5,6,7],10,true)
+      this.enemy.animations.add('right', [30,32,34,36],10,true)
+      this.enemy.animations.add('left', [22,24,26,28],10,true)
+      this.enemy.frame = 22;
+
+     }
+
+
+
+var game = new Phaser.Game(1400, 600, Phaser.AUTO, '', { preload: preload, create: create,update: update })
+var bullets;
+var enemy1;
+var fireRate = 100;
+var nextFire = 0;
+var lands;
+
+
+
+// PRELOAD FUNCTION //
+
+function preload() {
+
+this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+this.scale.pageAlignVertically = true;
+this.scale.setScreenSize( true );
+
+
+game.load.image('ground', 'assets/platform.png')
+game.load.image('star', 'assets/star.png');
+game.load.spritesheet('pro', 'assets/pro.png', 64, 64);
+game.load.spritesheet('dude', 'assets/badguy1.png', 64, 64)
+game.load.spritesheet('dude2', 'assets/badguy2.png', 64, 64)
+game.load.spritesheet('dude3', 'assets/badguy3.png', 64, 64)
+game.load.spritesheet('dude4', 'assets/badguy4.png', 64, 64)
+game.load.spritesheet('balloon','assets/balloon.png',32,32)
+game.load.image('bloq', 'assets/bloq.png')
+game.load.spritesheet('bullet', 'assets/bullet.png',32,32)
+game.load.image('background', 'assets/background.png');
+game.load.image('land', 'assets/land.png');
+game.load.image('ground', 'assets/ground.png');
+game.load.image('diamond', 'assets/diamond.png');
+game.load.audio('jump', 'assets/jump.mp3');
+game.load.audio('pickup', 'assets/pickup.mp3');
+game.load.audio('theme', 'assets/theme.mp3');
+game.load.audio('pop', 'assets/pop.mp3')
+game.load.image('map_2', 'assets/map_2.png')
+game.load.image('map_five', 'assets/map_five.png')
+game.load.spritesheet('machine', 'assets/boss.png',128,128)
+game.load.spritesheet('beam', 'assets/beam.png',32,32)
+game.load.image('pause', 'assets/pause.png', 256, 256);
+game.load.image('play', 'assets/play.png', 256, 256);
+game.load.audio('machinegun', 'assets/machinegun.mp3')
+}
+
+var diamonds;
+var score = 0;
+var scoreText;
+var bullets;
+var bullets2;
+var enemy1;
+var fireRate = 100;
+var nextFire = 0;
+var lands;
+var player;
+var starz;
+
+
+// CREATE FUNCTION //
+function create() {
+    
+    game.stage.backgroundColor = "#4488AA"; 
+    this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D)
+    game.add.sprite
+    game.world.setBounds(0, 0, 0,0);
+   
+    var x = 4000
+    var b = -500
+   
+    game.add.tileSprite(0, 0, 1920, 1200, 'background');
+    game.add.tileSprite(1920,200, 3840, 1800, 'map_2');
+    game.add.tileSprite(3840, 200, 5000, 2400,'map_five');
+    player = new Player(10, 10,game)
+    player.player.frame = 42
+    enemy2 = new Enemy(game);
+    enemy3 = new Enemy(game);
+    enemy4 = new Enemy(game);
+    enemy5 = new Enemy(game);
+    enemy6 = new Enemy(game);
+    
+   //  if(<%=@checkpoint%> == 2){
+    
+   //    game.world.setBounds(0, 0, 3850,2000)
+
+
+    
+    
+   //  }
+
+   //  else if (<%=@checkpoint%> == 3){
+
+   // game.world.setBounds(0, 0, 6000,2000);
+   // // player.player.body.x = 5000
+   //  }
+
+   //  else {
+
+      game.world.setBounds(0, 0, 1920, 1200);
+
+    // }
+    
+
+
+
+
+    player.player.scale.setTo(2,2)
+    lands = game.add.group();
+    lands.enableBody = true;
+    
+    var ledge = lands.create(500, 1050, 'land');
+    
+    ledge.body.immovable = true;
+    ledge.scale.setTo(6,1)
+    ledge.body.immovable = true;
+    ledge = lands.create(2000, 1000, 'land')
+    ledge.body.immovable = true;  
+    ledge.scale.setTo(2,1);
+    ledge = lands.create(3000, 1000, 'land')
+    ledge.body.immovable = true;  
+    ledge.scale.setTo(2,1);
+    ledge = lands.create(4000, 1000, 'land')
+    ledge.body.immovable = true;  
+    ledge.scale.setTo(9,1);
+
+
+    diamonds = game.add.group();
+    diamonds.enableBody = true;
+
+    //  Here we'll create 12 of them evenly spaced apart
+    for (var i = 0; i < 50; i++) {
+        
+        //  Create a diamond inside of the 'diamonds' group
+        var diamond = diamonds.create(i * 70, 0, 'diamond');
+
+        //  Let gravity do its thing
+        diamond.body.gravity.y = 300;
+
+        //  This just gives each diamond a slightly random bounce value
+        diamond.body.bounce.y = 0.1 + Math.random() * 0.2;
+    }
+
+    
+    scoreText = game.add.text(100, 700, 'SCORE: 0', { fontSize: '32px', fill: '#000' });
+    scoreTextTween = game.add.tween(scoreText.scale).to({ x: 1.5, y: 1.5}, 200, Phaser.Easing.Linear.In).to({ x: 1, y: 1}, 200, Phaser.Easing.Linear.In);
+    gameOver = game.add.text(200, 800, '', { fontSize: '40px', fill: 'red' });
+    missionDone = game.add.text(200, 800, '', { fontSize: '40px', fill: 'red' });
+
+    jump = game.add.audio('jump');
+    pickup = game.add.audio('pickup');
+    theme = game.add.audio('theme');
+    pop = game.add.audio('pop')
+    machinegun = game.add.audio('machinegun')
+    theme.loop = true;
+    theme.volume = 0.020;
+    theme.play();
+
+
+    pause_label = game.add.text(900, 700, 'PAUSE', { fontSize: '32px', fill: '#000', class: 'btn'});
+    pause_label.inputEnabled = true;
+    pause_label.events.onInputUp.add(function () {
+      
+      game.paused = true;
+
+      pause = game.add.sprite(scoreText.x + 650, scoreText.y + 200, 'pause');
+      pause.anchor.setTo(0.5, 0.5);
+
+        
+      label = game.add.text(scoreText.x + 650, scoreText.y + 300, '', { font: '30px Arial', fill: '#000' });
+        label.anchor.setTo(0.5, 0.5);
+    });
+
+
+    game.input.onDown.add(unpause, self);
+
+
+  function unpause(event){
+
+        if(game.paused){
+          pause.destroy();
+          label.destroy();
+          game.paused = false;
+         }
+     }
+
+
+   enemy = game.add.sprite(500, game.world.height -300, 'dude')
+   childe = game.add.sprite(500, game.world.height - 300, 'bullet')
+   enemy.addChild(childe);
+   machine = game.add.sprite(5500, game.world.height - 800, 'machine')
+   machine.scale.setTo(2,2);
+   machine.frame = 2
+   game.physics.arcade.enable(machine)
+   machine.body.gravity.y = 5000;
+   enemy.scale.setTo(2,2)
+   machine.animations.add('left', [0,2,4,6,8,10,12],5,true)
+   machine.animations.add('right', [14,16,18,20,22,24,26],5,true)
+   machine.frame = 2
+   game.physics.arcade.enable(player);
+   game.physics.arcade.enable(enemy);
+   enemy.body.bounce.y = 0
+   enemy.body.gravity.y = 1000
+   enemy.animations.add('left', [0,1,2])
+   enemy.animations.add('right',[4,5,6])
+   enemy.frame = 22;
+   enemy.animations.add('fire', [20],10,true)
+   enemy.animations.add('fire_right', [34],10,true)
+   enemy.animations.add('hit',[35],10,true)
+   enemy.animations.add('prone-left',[10],10,true)
+   enemy.animations.add('prone-right',[12],10,true)
+   enemy.animations.add('roll',[4,5,6,7],10,true)
+   enemy.animations.add('right', [30,32,34,36],10,true)
+   enemy.animations.add('left', [22,24,26,28],10,true)
+   enemy.frame = 22;
+   enemy.body.x = 100;
+   cursors = game.input.keyboard.createCursorKeys();
+   stars = game.add.group();
+   stars.enableBody = true;
+ 
+   beam = game.add.sprite(-1000, -100, 'beam')  
+
+   bullet = game.add.sprite(-1000, -100 , 'bullet')
+   bullet2 = game.add.sprite(-100, -100 , 'bullet')
+   beams = game.add.group();
+
+
+      bullets = game.add.group();
+    
+      bullets2 = game.add.group();
+      
+      bullets3 = game.add.group();
+
+      bullets4 = game.add.group();
+
+      bullets5 = game.add.group();
+
+      bullets6 = game.add.group();
+
+      bullets7 = game.add.group();
+
+
+    for(i = 0; i < 50; i++) {
+
+
+        var bull = bullets.create(-1000, -100, 'bullet')
+        bull.enableBody = true;
+        game.physics.arcade.enable(bull);
+        bull.scale.setTo(2,2)
+        
+    }
+
+    for(i = 0; i < 50; i++) {
+
+        var bull2 = bullets2.create(-1000, -100, 'bullet')
+        bull2.enableBody = true;
+        game.physics.arcade.enable(bull2);
+        bull2.scale.setTo(2,2)
+
+}
+  
+for(i = 0; i < 50; i++) {
+
+        var bull2 = bullets3.create(-1000, -100, 'bullet')
+        bull2.enableBody = true;
+        game.physics.arcade.enable(bull2);
+        bull2.scale.setTo(2,2)
+        
+}
+
+for(i = 0; i < 50; i++) {
+
+        var bull2 = bullets4.create(-1000, -100, 'bullet')
+        bull2.enableBody = true;
+        game.physics.arcade.enable(bull2);
+        bull2.scale.setTo(2,2)
+        
+}
+
+for(i = 0; i < 50; i++) {
+
+        var bull2 = bullets5.create(-1000, -100, 'bullet')
+        bull2.enableBody = true;
+        game.physics.arcade.enable(bull2);
+        bull2.scale.setTo(2,2)
+        
+}
+
+for(i = 0; i < 50; i++) {
+
+        var bull2 = bullets6.create(-1000, -100, 'bullet')
+        bull2.enableBody = true;
+        game.physics.arcade.enable(bull2);
+        bull2.scale.setTo(2,2)
+        
+}
+
+
+for(i = 0; i < 50; i++) {
+
+        var bull2 = bullets7.create(-1000, -100, 'bullet')
+        bull2.enableBody = true;
+        game.physics.arcade.enable(bull2);
+        bull2.scale.setTo(2,2)
+        
+}
+
+
+  
+    
+    for(i = 0; i < 50; i++) {
+
+
+    var beamz = beams.create(-1000, -100, 'beam')
+        beamz.enableBody = true;
+        game.physics.arcade.enable(beamz);
+        beamz.scale.setTo(5,8)
+         beamz.body.setSize(25, 5, 40, 40)
+   }
+
+
+
+    bullet.enableBody = true;
+    bullets.physicsBodyType = Phaser.Physics.ARCADE;
+    this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    game.physics.arcade.enable(bullet);
+    game.physics.arcade.enable(bullet2)
+    bullet.scale.setTo(2,2)
+    bullet2.scale.setTo(2,2)
+    this.aKey = game.input.keyboard.addKey(Phaser.Keyboard.A)
+
+
+
+   for(var i = 0; i < 12; i++) {
+
+    var star = stars.create(i * 70, 0, 'star');
+    star.body.gravity.y = 6;
+    star.body.bounce.y = 0.7 + Math.random() * 0.2;
+   }
+
+   
+
+    a = game.time.now
+    last = game.time.now
+    player.player.body.collideWorldBounds=true;
+    enemy.body.setSize(25, 60, 40, 10);
+    player.player.body.setSize(25, 60, 40, 10)
+    }
+
+
+  // UPDATE FUNNCTION //
+  function update() {
+   
+     console.log(<%=@checkpoint%>);
+     game.physics.arcade.collide(enemy, lands)
+     game.physics.arcade.collide(enemy2.enemy, lands)
+     game.physics.arcade.collide(enemy3.enemy, lands)
+     game.physics.arcade.collide(enemy4.enemy, lands)
+     game.physics.arcade.collide(enemy5.enemy, lands)
+     game.physics.arcade.collide(enemy6.enemy, lands)
+     game.physics.arcade.collide(machine, lands)
+     game.physics.arcade.overlap(bullet, enemy, killEnemy, null, this)
+     game.physics.arcade.overlap(bullet,enemy2.enemy, killEnemy2,null,this)
+
+     game.physics.arcade.overlap(bullet,enemy3.enemy, killEnemy3,null,this)
+     game.physics.arcade.overlap(bullet,enemy4.enemy, killEnemy4,null,this)
+     game.physics.arcade.overlap(bullet,enemy5.enemy, killEnemy5,null,this)
+     game.physics.arcade.overlap(bullet,enemy6.enemy, killEnemy6,null,this)
+
+
+
+     if(player.player.body.velocity.x == 0) {
+     player.player.animations.stop(); 
+   }
+
+count++;
+
+
+
+if(dead_count == 2 ) {
+
+  game.world.setBounds(0, 0, 3850,2000);
+    
+       
+        $.ajax({
+        type:"POST",
+        url: '/game',
+        data: {values: {
+                   user_id: <%= current_user.id%>,
+                   checkpoint_value: 2,
+                   current_score: score 
+                   }}
+        });
+        
+        dead_count++;
+        
+      }
+
+ 
+
+    if(dead_count == 7 ) {
+
+  game.world.setBounds(0, 0, 6000,2000);
+    
+       
+        $.ajax({
+        type:"POST",
+        url: '/game',
+        data: {values: {
+                   user_id: <%= current_user.id%>,
+                   checkpoint_value: 3,
+                   current_score: score
+                   }}
+        });
+        
+        dead_count++;
+        
+      }
+
+     game.physics.arcade.overlap(bullet,machine, killMachine,null,this)
+count++;
+
+
+
+
+
+
+  scoreTextChange();
+
+  pauseLabelChange();
+
+  gameOverChange();
+
+  missionDoneChange();
+
+
+
+
+
+   
+   prone = "false"
+
+    
+  // game.debug.body(enemy)
+  // game.debug.body(player.player)
+  enemy.body.velocity.x = 0 
+ 
+
+enemy.body.gravity.y = 1000;
+enemy2.enemy.body.gravity.y = 1000;
+
+
+    
+    prone = "false"   
+    // game.debug.body(enemy)
+    
+if(beambeam > 0) {
+    // game.debug.body(thebeam)}
+    }
+
+
+    enemy.body.velocity.x = 0 
+    enemy.body.gravity.y = 1000;
+    
+    enemy3.enemy.body.x = 3505;
+    enemy4.enemy.body.x = 3415;
+    enemy5.enemy.body.x = 2300;
+    enemy6.enemy.body.x = 2600;
+    enemy5.enemy.body.x = 3200;
+
+
+  if(roll == "false"){
+    player.player.body.setSize(25, 60, 40, 10)
+    player.player.scale.setTo(2,2)
+  if(dcount == 0){
+
+    player.player.body.y = 900
+   dcount++;
+  }
+
+  }
+
+
+  if(game.time.now - last > 1000) {
+
+  fire3();
+
+
+
+}
+
+
+if (player.player.body.y > 3000) {
+  playerKilled++;
+}
+
+
+
+
+  if(player.player.body.x > 3850) {
+  
+  if(game.time.now - last > 1000) {
+
+    fireBeam();
+    machinegun.volume = 0.040;
+    machinegun.play();
+
+    }
+}
+
+
+
+if(player.player.body.x > 1600) {
+
+
+if(game.time.now - last > 1000) {
+
+
+    massFire();
+}
+}
+
+
+  // game.world.setBounds(0, 0, 1800,2000);
+   
+ 
+
+
+    game.physics.arcade.collide(player.player, lands);
+    game.physics.arcade.collide(diamonds, lands);
+
+    //  Checks to see if the player overlaps with any of the diamonds, if he does call the collectdiamond function
+    game.physics.arcade.overlap(player.player, diamonds, collectDiamond, null, this);
+    game.physics.arcade.overlap(player.player, stars, collectDiamond, null,this);
+    game.physics.arcade.overlap(player.player, bullet2, killPlayer, null, this)
+    game.physics.arcade.overlap(player.player, ebullet, killPlayer, null, this )
+    game.physics.arcade.overlap(player.player, thebeam, killP, null, this)
+ 
+  if(game.time.now - last > 1000) {
+    pop.volume = 0.040;
+    pop.play();
+    fire2();
+    if(eturn == "left") {
+
+    enemy.animations.play('fire')}
+    
+
+    if(eturn == "right") {
+      enemy.animations.play('fire_right')
+    }
+    last = game.time.now
+    
+    }
+
+
+
+
+ 
+ if (this.spaceKey.isDown) {
+        
+        
+    if(turn == 'left') {
+
+      player.player.animations.play('shoot_left')
+    
+      fire();
+    }
+
+    else {
+
+    player.player.animations.play('shoot');
+    fire();
+        
+    }
+
+}   
+
+
+
+
+ if(enemy.body.x <= player.player.body.x - 300 && prone == "false" 
+  && enemy.body.touching.down ){
+
+    enemy.animations.play('right')
+    enemy.body.velocity.x = 100
+
+  } else if (enemy.body.x >= player.player.body.x + 300 && prone == "false"
+  && enemy.body.touching.down){
+  enemy.animations.play('left')
+  enemy.body.velocity.x = -100
+  } else {
+
+  // enemy.body.velocity.x = 0
+  // enemy.body.velocity.y = 0
+ }
+
+
+var z = 0
+  
+player.player.body.velocity.x = 0;
+
+
+if(bullet.body.x >= enemy.body.x - 500 && bullet.body.x < enemy.body.x && turn != 'left' &&
+  enemy.body.touching.down && duck != "true" && player.player.body.x < enemy.body.x ){
+  enemy.body.setSize(25, 30, 40, 60  );
+  enemy.animations.play('prone-left');
+  enemy.scale.setTo(2,1.99)
+  enemy.body.x.velocity = 0;
+  prone = "true";
+  } else if(bullet.body.x <= enemy.body.x + 500 && bullet.body.x > enemy.body.x && turn == 'left' && enemy.body.touching.down && duck != "true" ) {
+     enemy.body.setSize(25, 30, 40, 60  ); 
+     enemy.animations.play('prone-right');     
+     enemy.scale.setTo(2,1.99)
+     enemy.body.x.velocity = 0;
+     prone = "true";
+ 
+  } else  {
+
+}
+
+
+
+ if(cursors.up.isDown && player.player.body.touching.down && cursors.right.isDown){
+
+    player.player.body.velocity.x = 1000
+    player.player.body.velocity.y = -550
+
+ } else if(cursors.down.isDown) {
+  
+      if(turn == "left"){
+      player.player.animations.play('duck_left')
+      duck = "true";
+      prone = "false"
+      pronecount = 0; 
+} else {
+
+  player.player.animations.play('duck')
+  duck = "true";
+  prone = "false"
+  pronecount = 0;
+ }
+}
+
+else if(this.dKey.isDown && cursors.right.isDown) {
+roll = "true"
+dcount = 0;
+player.player.body.velocity.x = 550;
+player.player.animations.play('roll')
+duck = "false"
+player.player.body.setSize(25, 30, 40, 60)
+player.player.scale.setTo(1.99,1.99)
+}
+
+else if(this.dKey.isDown && cursors.left.isDown) {
+roll = "true"
+dcount = 0;
+player.player.body.velocity.x = -550;
+player.player.animations.play('roll_left')
+duck = "false"
+player.player.body.setSize(25, 30, 40, 60)
+player.player.scale.setTo(1.99,1.99)
+
+}
+
+else if(this.aKey.isDown && cursors.left.isDown) {
+roll = "true"
+dcount = 0
+player.player.body.velocity.x = -550;
+player.player.animations.play('roll')
+duck = "false"
+player.player.body.setSize(25, 30, 40, 60)
+player.player.scale.setTo(1.99,1.99)
+
+}
+
+else if(this.aKey.isDown && cursors.right.isDown) {
+roll = "true"
+dcount = 0
+player.player.body.velocity.x = 550;
+player.player.animations.play('roll_left')
+duck = "false"
+player.player.body.setSize(25, 30, 40, 60)
+player.player.scale.setTo(1.99,1.99)
+
+}
+
+else if(cursors.left.isDown)
+{
+    
+    player.player.body.velocity.x = -350;
+
+    player.player.animations.play('left');
+    turn = "left"
+    duck = "false"
+    roll = "false"
+}
+else if (cursors.right.isDown )
+{
+roll = "false"
+player.player.body.velocity.x = 350;
+
+player.player.animations.play('right')
+turn = "right"
+
+duck = "false"
+
+}
+
+else if(cursors.up.isDown && player.player.body.touching.down )
+
+{
+
+    player.player.body.velocity.y = -750;
+    duck = "false"
+    roll = "false"
+}
+
+else {
+
+    // player.player.animations.stop()
+    
+roll = "false"
+}
+
+
+
+if(prone == "false" && bullet.body.y > 950 ){
+  pronecount++;
+  enemy.body.setSize(25, 60, 40, 10);
+  enemy.scale.setTo(2,2)
+  enemy.body.y = 930;
+  // enemy.body.velocity.y = -50; 
+}
+
+
+if(enemy.body.y < 700){
+
+  prone = "neutral"
+}
+
+
+if(machine.body.x <= 5600 && machine.body.x > 4100 && mcount == 0) {
+  direction = "left"
+  machine.animations.play('left');
+  machine.body.velocity.x = -200
+}
+
+else {
+  machine.animations.play('right')
+  machine.body.velocity.x = 200
+  mcount++;
+  direction = "right";
+  if(machine.body.x > 5500) {
+
+    mcount = 0;
+  }
+}
+console.log(bullet.body.y)
+if(duck == "true"){
+  yes = 0;
+}
+
+if( duck == "true" &&  bullet.body.x > enemy.body.x || duck == "true" && bullet.body.x < enemy.body.x ){
+
+
+
+enemy.body.velocity.y = -100;
+enemy.body.velocity.y += 10;
+enemy.animations.stop();}
+
+
+
+//enemy2 actions
+
+if(bullet.body.x <= enemy2.enemy.body.x && bullet.body.x > enemy2.enemy.body.x - 1000){
+
+
+enemy2.enemy.body.velocity.y = -100
+enemy2.enemy.animations.stop();
+}
+
+else if(bullet.body.x >= enemy2.enemy.body.x && bullet.body.x < enemy2.enemy.body.x + 1000 ){
+
+enemy2.enemy.body.velocity.y = -100
+enemy2.enemy.animations.stop();
+
+
+}
+
+else {
+
+  // enemy2.enemy.body.velocity.y = 0
+
+}
+
+
+if (playerKilled > 0) {
+gameOver.text = 'GAME OVER';
+game.paused = true;
+}
+
+if (machineKilled > 0) {
+missionDone.text = 'LEVEL 1, BETA COMPLETE';
+game.paused = true;
+}
+
+
+
+if(enemy2.enemy.body.x < player.player.body.x && enemy2.enemy.body.touching.down) {
+
+  enemy2.enemy.body.velocity.x = 50
+  enemy2.enemy.animations.play('right')
+}
+else if (enemy2.enemy.body.x >= player.player.body.x && enemy2.enemy.body.touching.down){
+
+  enemy2.enemy.body.velocity.x = -50
+  enemy2.enemy.animations.play('left')
+}
+
+
+
+}
+
+
+
+function collectDiamond (player, diamond, star) {
+
+    // Removes the diamond from the screen
+    diamond.kill();
+
+    pickup.volume = 0.040;
+    pickup.play();
+    // scoreTextTween.start();
+    score += 10;
+    scoreText.text = 'SCORE: ' + score;
+ 
+    console.log( player, diamond, star)
+    var that = this;
+
+    (function(x, y, message, score){
+ 
+      var scoreFont = "40px Arial";
+   
+      //Create a new label for the score
+      var scoreAnimation = game.add.text(x, y, message, {font: scoreFont, fill: "#39d179", stroke: "#ffffff", strokeThickness: 15}); 
+      scoreAnimation.anchor.setTo(0.5, 0);
+      scoreAnimation.align = 'center';
+   
+      //Tween this score label to the total score label
+      var scoreTween = game.add.tween(scoreAnimation).to({x:scoreText.x, y: scoreText.y}, 800, Phaser.Easing.Exponential.In, true);
+   
+      //When the animation finishes, destroy this score label, trigger the total score labels animation and add the score
+      scoreTween.onComplete.add(function(){
+          scoreAnimation.destroy();
+          scoreTextTween.start();
+          
+      }, that);
+  })(player.body.x, player.body.y, "+10!", 150)
+
+}
+
+function scoreTextChange (x, y) {
+  
+  scoreText.x = game.camera.x + 50;
+  scoreText.y = game.camera.y + 100;
+
+}
+
+function pauseLabelChange (x, y) {
+  
+  pause_label.x = scoreText.x + 1200;
+  pause_label.y = scoreText.y;
+
+
+}
+
+
+function gameOverChange (x, y) {
+  
+  gameOver.x = scoreText.x + 550;
+  gameOver.y = scoreText.y + 200;
+
+}
+
+function missionDoneChange (x, y) {
+  
+  missionDone.x = scoreText.x + 550;
+  missionDone.y = scoreText.y + 100;
+
+}
+
+function killEnemy(bullet, enemy){
+  
+  enemy.animations.play('hit')
+  // if(fire1lap == 1){
+  //   health = health - 1;
+  //   fire1lap++;
+  // }
+  // if(health <= 0){
+  enemy.kill();
+  dead_count++;
+  bullets2.forEach(c => c.kill());
+  bullet.body.position.y = -10000
+
+  
+  
+   
+}
+
+function killEnemy2(bullet, enemy2){
+  
+  enemy2.kill();
+  dead_count++;
+  bullets7.forEach(c => c.kill());
+  bullet.body.position.y = -100000
+
+}
+
+function killEnemy3(bullet, enemy3){
+  
+  enemy3.kill();
+  dead_count++;
+  bullets3.forEach(c => c.kill());
+  bullet.body.position.y = -100000
+
+}
+
+function killEnemy4(bullet, enemy4){
+  
+  enemy4.kill();
+  dead_count++;
+  bullets4.forEach(c => c.kill());
+  bullet.body.position.y = 1000
+
+}
+
+
+function killEnemy5(bullet, enemy5){
+  
+  enemy5.kill();
+  dead_count++;
+  bullets5.forEach(c => c.kill());
+  bullet.body.position.y = 1000
+
+}
+
+
+function killEnemy6(bullet, enemy6){
+  
+  enemy6.kill();
+  dead_count++;
+  bullets6.forEach(c => c.kill());
+}
+
+
+function killMachine(bullet, machine){
+
+ machine.kill();
+  dead_count++;
+  machineKilled ++;
+  beams.forEach(c => c.kill());
+
+  bullet.body.position.y = -10000
+
+}
+
+
+
+function enemyJump() {
+  console.log("jump")
+  enemy.body.velocity.y -= 100;
+}
+
+function killPlayer(player,bullet2){
+  // health = health - 1;
+   
+  player.animations.play('hit')
+  if(fire2lap == 1){
+    player.health = player.health - 1;
+    fire2lap++;
+  }
+  if(player.health <= 0){
+  player.kill();
+  bullet2.kill();
+  playerKilled++;
+  }
+    
+}
+
+
+function killP(player) {
+
+  player.kill()
+  playerKilled++;
+
+}
+
+
+
+function gravityZero(){
+
+  player.player.body.gravity.y = 0
+  player.player.body.velocity.y -= 5
+  balloon.body.y = player.body.y - 60
+  balloon.body.x = player.body.x
+}
+
+
+function fire() {
+  
+  if((game.time.now - a) > 200 ) {
+    fire1lap = 1
+   a = game.time.now
+   bullet = bullets.children[bcount]
+    
+    if(duck == "true"){
+
+    bullet.body.x  = player.player.body.x + 17
+    bullet.body.y = player.player.body.y + 60
+    }
+
+    else {
+    bullet.body.x  = player.player.body.x + 17
+    bullet.body.y = player.player.body.y }
+    
+    if(turn == 'left'){
+      bullet.body.velocity.x = -500;
+    }
+    else{
+      bullet.body.velocity.x = 500;}
+      pop.volume = 0.040;
+      pop.play();
+      bcount++;
+ if(bcount >= 49) {
+  bcount = 0
+ }
+}
+}
+
+
+function fire3() {
+
+ebullet = bullets7.children[b7count];
+b7count++;
+ebullet.body.x = enemy2.enemy.body.x
+ebullet.body.y = enemy2.enemy.body.y + 50
+
+
+if(enemy2.enemy.body.x < player.player.body.x){
+
+  ebullet.body.velocity.x = 500
+  enemy2.enemy.animations.play('fire')
+
+}
+  else {
+
+    ebullet.body.velocity.x = -500
+    enemy2.enemy.animations.play('fire_right');
+  }
+
+
+
+if(b7count >= 49) {
+
+  b7count = 0;
+
+
+}
+
+}
+
+
+
+
+
+
+function fire2() {
+
+    fire2lap = 1;
+    bullet2 = bullets2.children[b2count]
+
+    bullet2.body.x  = enemy.body.x
+    bullet2.body.y = enemy.body.y + 50
+
+    if(prone == "true" && player.player.body.x < enemy.body.x ){
+      eturn = "prone"
+      bullet2.body.velocity.x = -500;
+    }
+
+
+    else if(prone == "true" && player.player.body.x < enemy.body.x ){
+
+      eturn = "prone-right"
+      bullet2.body.velocity.x = 500;
+
+    }
+
+    else if(player.player.body.x < enemy.body.x){
+    eturn = "left";
+    bullet2.body.velocity.x = -500;}
+
+    else {
+      eturn = "right";
+      bullet2.body.velocity.x = 500  
+    }
+
+    b2count++;
+    if(b2count >= 49) {
+  b2count = 0
+ }
+
+}
+
+
+function massFire(){
+
+bull3 = bullets3.children[b3count]
+bull4 = bullets4.children[b4count]
+bull5 = bullets5.children[b5count]
+bull6 = bullets6.children[b6count]
+
+// if(player.player.body > enemy3.enemy.body - 500) {
+bull3.body.x = enemy3.enemy.body.x
+bull3.body.y = enemy3.enemy.body.y + 40
+
+
+bull3.body.velocity.x = -500
+enemy3.enemy.animations.play('fire')
+
+
+// if(player.player.body > enemy4.enemy.body - 500) {
+
+
+
+bull4.body.x = enemy4.enemy.body.x
+bull4.body.y = enemy4.enemy.body.y + 40
+
+bull4.body.velocity.x = -500
+enemy4.enemy.animations.play('fire')
+
+// if(player.player.body > enemy5.enemy.body - 500) {
+
+
+bull5.body.x = enemy5.enemy.body.x
+bull5.body.y = enemy5.enemy.body.y + 40
+bull5.body.velocity.x = -500
+enemy5.enemy.animations.play('fire')
+
+
+// if(player.player.body > enemy6.enemy.body - 500) {
+
+
+bull6.body.x = enemy6.enemy.body.x
+bull6.body.y = enemy6.enemy.body.y + 40
+bull6.body.velocity.x = -500
+enemy6.enemy.animations.play('fire')
+b3count++;
+b4count++;
+b5count++;
+b6count++;
+
+
+
+if (b3count >= 49) {
+
+b3count = 0;
+
+}
+if (b4count >= 49) {
+
+b4count = 0;
+
+}
+
+if (b5count >= 49) {
+
+b5count = 0;
+
+}
+
+if (b6count >= 49) {
+
+b6count = 0;
+
+}
+
+}
+
+
+function fireBeam() {
+beambeam++;
+thebeam = beams.children[beamcount]
+
+
+if(direction == "left"){
+
+thebeam.body.x = machine.body.x
+thebeam.body.y = machine.body.y + 80
+thebeam.body.velocity.x = -500}
+
+else if(direction == "right"){
+thebeam.body.x = machine.body.x + 160
+thebeam.body.y = machine.body.y + 80
+  thebeam.body.velocity.x = 500
+}
+
+
+
+
+
+
+beamcount++;
+if (beamcount >= 49) {
+
+beamcount = 0;
+
+}
+
+// machinegun.play();
+}
+
+
+</script>
+</div>
